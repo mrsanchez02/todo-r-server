@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/todo
+content-type: : application/json
+
+{
+    "id":99,
+    "title":"Dominar Full Stack",
+    "completed":true
+}
