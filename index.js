@@ -1,9 +1,11 @@
 const {generate} = require("short-id");
+const cors = require("cors");
 const express = require("express");
 const app = express();
 
 // Express Body Parser
 app.use(express.json());
+app.use(cors());
 
 // port
 const PORT = 3001;
@@ -58,6 +60,30 @@ app.post("/api/todo",(req,res)=>{
 	};
 	ToDo = [...ToDo, newTodo];
 	res.json(newTodo);
+});
+
+app.put("/api/todo/:id",(req,res)=>{
+	const id = Number(req.params.id);
+	const todoBody = req.body;
+	if(todoBody.title.trim()==="") return res.status(204).end();
+	const todo = ToDo.find(n=>n.id===id);
+	const NewToDoList = ToDo.map(n=>{
+		if(n.id===id){
+			return {
+				...todo,
+				title: todoBody.title,
+				completed: todoBody.completed || n.completed
+			};
+		}
+		return n;
+	});
+	
+	if(todo){
+		ToDo = NewToDoList;
+		res.json(ToDo);
+	} else {
+		res.status(404).end();
+	}
 });
 
 // Running server...
